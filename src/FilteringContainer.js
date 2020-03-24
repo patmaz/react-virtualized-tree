@@ -60,6 +60,8 @@ export default class FilteringContainer extends React.Component {
       selectedGroup,
       groupRenderer: GroupRenderer,
       onSelectedGroupChange,
+      renderSearch,
+      customNodeFilter,
     } = this.props;
 
     const relevantNodes =
@@ -74,11 +76,18 @@ export default class FilteringContainer extends React.Component {
     return (
       <div className="tree-filter-container">
         <div className={classNames('tree-lookup-input', {group: !!groups})}>
-          <input value={filterText} onChange={this.handleFilterTextChange} placeholder="Search..." />
+          {renderSearch ? (
+            renderSearch(this.handleFilterTextChange)
+          ) : (
+            <input value={filterText} onChange={this.handleFilterTextChange} placeholder="Search..." />
+          )}
           <i aria-hidden="true" className="mi mi-11 mi-search" />
           {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
         </div>
-        {treeRenderer({nodes: filteredNodes, nodeParentMappings})}
+        {treeRenderer({
+          nodes: customNodeFilter ? customNodeFilter(filteredNodes) : filteredNodes,
+          nodeParentMappings,
+        })}
       </div>
     );
   }
@@ -90,5 +99,6 @@ FilteringContainer.propTypes = {
   groups: PropTypes.object,
   selectedGroup: PropTypes.string,
   groupRenderer: PropTypes.func,
-  onSelectedGroupChange: PropTypes.func,
+  renderSearch: PropTypes.func,
+  customNodeFilter: PropTypes.func,
 };

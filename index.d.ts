@@ -103,6 +103,8 @@ export interface FilteringContainerProps {
   selectedGroup?: string;
   groupRenderer?: React.StatelessComponent<GroupRendererProps> | React.Component<GroupRendererProps>;
   onSelectedGroupChange?: (c: string) => void;
+  renderSearch?: (handleFilterTextChange: (e: React.ChangeEvent) => void) => React.ReactElement;
+  customNodeFilter?: (nodes: Node[]) => Node[];
 }
 
 export class FilteringContainer extends React.Component<FilteringContainerProps> {}
