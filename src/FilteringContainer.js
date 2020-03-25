@@ -43,12 +43,14 @@ export default class FilteringContainer extends React.Component {
     this.setState(ps => ({filterTerm: ps.filterText}));
   }
 
-  handleFilterTextChange = e => {
+  handleFilterTextChange = (e, cb) => {
     const filterText = e.target.value;
 
     this.setState({filterText});
 
     this.setFilterTerm();
+
+    cb && cb();
   };
 
   render() {
@@ -62,6 +64,7 @@ export default class FilteringContainer extends React.Component {
       onSelectedGroupChange,
       renderSearch,
       customNodeFilter,
+      postFilterNodeAction,
     } = this.props;
 
     const relevantNodes =
@@ -70,7 +73,9 @@ export default class FilteringContainer extends React.Component {
         : {nodes, nodeParentMappings: {}};
 
     const {nodes: filteredNodes, nodeParentMappings} = filterTerm
-      ? filterNodes(nameMatchesSearchTerm(filterTerm), relevantNodes.nodes)
+      ? postFilterNodeAction
+        ? postFilterNodeAction(filterNodes(nameMatchesSearchTerm(filterTerm), relevantNodes.nodes))
+        : filterNodes(nameMatchesSearchTerm(filterTerm), relevantNodes.nodes)
       : relevantNodes;
 
     return (
@@ -100,5 +105,6 @@ FilteringContainer.propTypes = {
   selectedGroup: PropTypes.string,
   groupRenderer: PropTypes.func,
   renderSearch: PropTypes.func,
+  postFilterNodeAction: PropTypes.func,
   customNodeFilter: PropTypes.func,
 };

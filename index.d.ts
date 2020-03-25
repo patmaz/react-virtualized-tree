@@ -104,6 +104,7 @@ export interface FilteringContainerProps {
   groupRenderer?: React.StatelessComponent<GroupRendererProps> | React.Component<GroupRendererProps>;
   onSelectedGroupChange?: (c: string) => void;
   renderSearch?: (handleFilterTextChange: (e: React.ChangeEvent) => void) => React.ReactElement;
+  postFilterNodeAction: (nodes: Node[]) => Node[];
   customNodeFilter?: (nodes: Node[]) => Node[];
 }
 
