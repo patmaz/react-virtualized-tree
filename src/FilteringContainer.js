@@ -18,8 +18,6 @@ export default class FilteringContainer extends React.Component {
   state = {
     filterText: '',
     filterTerm: '',
-    filteredNodes: null,
-    nodeParentMappings: null,
   };
 
   getChildContext = () => {
@@ -51,13 +49,22 @@ export default class FilteringContainer extends React.Component {
     this.setState({filterText});
 
     this.setFilterTerm();
+
+    this.props.filterNodeAction && this.props.filterNodeAction();
   };
 
-  static getDerivedStateFromProps(props, state) {
-    const {nodes, groups, selectedGroup} = props;
-    const {filterTerm} = state;
-
-    props.filterNodeAction && props.filterNodeAction();
+  render() {
+    const {filterTerm, filterText} = this.state;
+    const {
+      nodes,
+      children: treeRenderer,
+      groups,
+      selectedGroup,
+      groupRenderer: GroupRenderer,
+      onSelectedGroupChange,
+      renderSearch,
+      customNodeFilter,
+    } = this.props;
 
     const relevantNodes =
       groups && selectedGroup && groups[selectedGroup]
@@ -67,23 +74,6 @@ export default class FilteringContainer extends React.Component {
     const {nodes: filteredNodes, nodeParentMappings} = filterTerm
       ? filterNodes(nameMatchesSearchTerm(filterTerm), relevantNodes.nodes)
       : relevantNodes;
-
-    return {
-      filteredNodes,
-      nodeParentMappings,
-    };
-  }
-
-  render() {
-    const {filterText} = this.state;
-    const {
-      children: treeRenderer,
-      groups,
-      selectedGroup,
-      groupRenderer: GroupRenderer,
-      onSelectedGroupChange,
-      renderSearch,
-    } = this.props;
 
     return (
       <div className="tree-filter-container">
@@ -97,8 +87,8 @@ export default class FilteringContainer extends React.Component {
           {groups && <GroupRenderer groups={groups} selectedGroup={selectedGroup} onChange={onSelectedGroupChange} />}
         </div>
         {treeRenderer({
-          nodes: this.state.filteredNodes,
-          nodeParentMappings: this.state.nodeParentMappings,
+          nodes: customNodeFilter ? customNodeFilter(filteredNodes) : filteredNodes,
+          nodeParentMappings,
         })}
       </div>
     );
