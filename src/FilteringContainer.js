@@ -46,11 +46,11 @@ export default class FilteringContainer extends React.Component {
   handleFilterTextChange = e => {
     const filterText = e.target.value;
 
-    this.props.filterNodeAction && this.props.filterNodeAction();
-
     this.setState({filterText});
 
     this.setFilterTerm();
+
+    this.props.filterNodeAction && this.props.filterNodeAction();
   };
 
   render() {
